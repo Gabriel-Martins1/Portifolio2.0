@@ -372,3 +372,108 @@ section[id] {
 .footer-links a:hover {
   color: var(--accent);
 }
+
+
+@media (max-width: 768px) {
+  /* Navbar */
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px 20px;
+  }
+
+  .navbar-links {
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 0.9rem;
+  }
+
+  /* Seções — menos respiro vertical e lateral em telas pequenas */
+  section[id] {
+    padding: 60px 20px;
+  }
+
+  /* Hero */
+  #hero {
+    min-height: auto;
+    padding-top: 40px;
+  }
+
+  #hero h1 {
+    font-size: 2rem;
+  }
+
+  #hero > div {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn {
+    text-align: center;
+  }
+
+  /* Projetos — 1 coluna garantida (o auto-fit já ajuda, mas reforça) */
+  .projects-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .project-card {
+    padding: 20px;
+  }
+
+  .project-card-links {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  /* Contato */
+  .contact-links {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .contact-links a {
+    text-align: center;
+  }
+
+  /* Footer */
+  .footer {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+
+  /* Admin */
+  .admin-panel {
+    padding: 40px 16px;
+  }
+
+  .admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .admin-list-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .project-form {
+    padding: 16px;
+  }
+}
+
+/* Ajuste extra pra celulares bem pequenos (iPhone SE, etc) */
+@media (max-width: 380px) {
+  #hero h1 {
+    font-size: 1.6rem;
+  }
+
+  .navbar-logo {
+    font-size: 1rem;
+  }
+}
