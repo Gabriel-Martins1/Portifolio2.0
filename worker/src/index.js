@@ -1,7 +1,7 @@
 // worker/src/index.js — Worker do portfólio (D1 + R2 + login admin)
 
 const LIMITE_SEGURANCA_BYTES = 9 * 1024 * 1024 * 1024; // 9GB (folga de 1GB do limite grátis de 10GB)
-const TAMANHO_MAX_ARQUIVO = 50 * 1024 * 1024; // 50MB por arquivo
+const TAMANHO_MAX_ARQUIVO = 100 * 1024 * 1024; // 100MB por arquivo
 
 export default {
   async fetch(request, env) {
