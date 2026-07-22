@@ -62,10 +62,12 @@ async function criarProjeto(request, env) {
   const erro = validarProjeto(d);
   if (erro) return json(erro.body, erro.status);
 
-  const r = await env.DB.prepare(
+  const r = await env.DB.prepare( //prepare() é usado no Cloudflare Workers (D1)
+                                  //para preparar uma consulta SQL de forma segura antes de executá-la.
+                                  //  Ele cria uma declaração pronta (prepared statement), que protege seu banco de dados contra ataques de Injeção de SQL (SQL Injection)
     `INSERT INTO projetos (titulo, descricao, stack, link_repo, link_demo, imagem_url, video_url, arquivo_url, arquivo_tipo)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
-  ).bind(
+  ).bind( //O método .bind() cria uma nova função 
     d.titulo, d.descricao, d.stack, d.link_repo,
     d.link_demo || null, d.imagem_url || null, d.video_url || null,
     d.arquivo_url || null, d.arquivo_tipo || null
@@ -102,7 +104,7 @@ async function deletarProjeto(id, env) {
 }
 
 function validarProjeto(d) {
-  if (!d.titulo || d.titulo.trim() === "")
+  if (!d.titulo || d.titulo.trim() === "")  //trim() serve para limpar ou "aparar" espaços em branco
     return { status: 400, body: { erro: "Título é obrigatório" } };
   if (!d.descricao || d.descricao.trim() === "")
     return { status: 400, body: { erro: "Descrição é obrigatória" } };
@@ -135,7 +137,8 @@ function validarLink(url) {
 // Imagens podem ser um link http(s) OU um caminho local tipo /projetos/foo.png
 function validarLinkOuCaminhoLocal(url) {
   if (!url) return true;
-  if (url.startsWith("/")) return true;
+  if (url.startsWith("/")) return true; //startsWith() serve para verificar se uma string começa com os mesmos caracteres de uma outra string informada.
+                                        // Ele valida essa condição e retorna apenas um valor booleano: true (verdadeiro) ou false (falso).
   return validarLink(url);
 }
 
@@ -145,7 +148,7 @@ async function handleUpload(request, env) {
   const formData = await request.formData();
   const arquivo = formData.get("arquivo");
 
-  if (!arquivo) return json({ erro: "Nenhum arquivo enviado" }, 400);
+  if (!arquivo) return json({ erro: "Nenhum arquivo enviado" }, 400); 
 
   if (arquivo.size > TAMANHO_MAX_ARQUIVO) {
     return json({ erro: "Arquivo muito grande. Máximo de 50MB." }, 413);
@@ -155,8 +158,8 @@ async function handleUpload(request, env) {
     "SELECT bytes_usados FROM controle_armazenamento WHERE id = 1"
   ).first();
 
-  if (controle.bytes_usados + arquivo.size > LIMITE_SEGURANCA_BYTES) {
-    return json({ erro: "Limite de armazenamento seguro atingido. Upload bloqueado." }, 507);
+  if (controle.bytes_usados + arquivo.size > LIMITE_SEGURANCA_BYTES) { 
+    return json({ erro: "Limite de armazenamento seguro atingido. Upload bloqueado." }, 507); // HTTP 507 Insufficient Storage
   }
 
   const nomeArquivo = `${Date.now()}-${arquivo.name}`;
@@ -199,17 +202,17 @@ async function login(request, env) {
 }
 
 async function gerarToken(secret) {
-  const payload = { exp: Date.now() + 1000 * 60 * 60 * 4 }; // expira em 4h
-  const encoder = new TextEncoder();
+  const payload = { exp: Date.now() + 1000 * 60 * 60 * 4 }; // expira em 4h 
+  const encoder = new TextEncoder(); //transforma em bytes 
   const key = await crypto.subtle.importKey(
-    "raw", encoder.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]
+    "raw", encoder.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"] 
   );
   const payloadStr = JSON.stringify(payload);
   const assinatura = await crypto.subtle.sign("HMAC", key, encoder.encode(payloadStr));
   const assinaturaHex = [...new Uint8Array(assinatura)]
     .map(b => b.toString(16).padStart(2, "0")).join("");
   return btoa(payloadStr) + "." + assinaturaHex;
-}
+} 
 
 async function validarToken(request, env) {
   const auth = request.headers.get("Authorization");
@@ -224,8 +227,9 @@ async function validarToken(request, env) {
     "raw", encoder.encode(env.JWT_SECRET), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]
   );
   const assinaturaEsperada = await crypto.subtle.sign("HMAC", key, encoder.encode(atob(payloadB64)));
-  const assinaturaHex = [...new Uint8Array(assinaturaEsperada)]
-    .map(b => b.toString(16).padStart(2, "0")).join("");
+  const assinaturaHex = [...new Uint8Array(assinaturaEsperada)] //Uint8Array é um tipo especial de array que só aceita números inteiros entre 0 e 255
+                                                                 //função dele é tirar os elementos de dentro da lista e joga-los para fora, soltos
+    .map(b => b.toString(16).padStart(2, "0")).join(""); // serve para transformar um array de bytes em uma string hexadecimal legível
 
   if (assinaturaHex !== assinatura) return false;
 
