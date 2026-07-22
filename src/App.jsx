@@ -5,7 +5,7 @@ import Projects from './sections/Projects'
 import Contact from './sections/Contact'
 import Admin from './pages/Admin'
 import './App.css'
-
+import Footer from './components/Footer'
 function App() {
   const isAdmin = window.location.pathname === "/admin";
 
@@ -20,6 +20,7 @@ function App() {
       <About />
       <Projects />
       <Contact />
+      <Footer />
     </>
   )
 }
