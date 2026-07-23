@@ -1,11 +1,12 @@
 import Navbar from './components/Navbar'
 import Hero from './sections/Hero'
 import About from './sections/About'
+import Skills from './sections/Skills'
 import Projects from './sections/Projects'
 import Contact from './sections/Contact'
-import Admin from './pages/Admin'
-import './App.css'
 import Footer from './components/Footer'
+import './App.css'
+
 function App() {
   const isAdmin = window.location.pathname === "/admin";
 
@@ -18,6 +19,7 @@ function App() {
       <Navbar />
       <Hero />
       <About />
+      <Skills />
       <Projects />
       <Contact />
       <Footer />
