@@ -3,8 +3,8 @@ import Reveal from '../components/Reveal';
 const skills = [
   { nome: "C#", slug: "sharp" },  
   { nome: "React", slug: "react" },
-  { nome: "React Native", slug: "react" },
   { nome: "Node.js", slug: "nodedotjs" },
+  { nome: "React Native", slug: "react" },
   { nome: "Express", slug: "express" },
   { nome: "GitHub", slug: "github" },
   { nome: "PostgreSQL", slug: "postgresql" },
