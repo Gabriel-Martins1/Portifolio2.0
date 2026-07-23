@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 :root {
   --bg: #0a0b0f;
   --bg-alt: #14161d;
@@ -47,12 +48,33 @@ section[id] {
   scroll-margin-top: 80px;
 } 
 
-html, body {
+body {
   overflow-x: hidden;
   max-width: 100%;
 }
-
 img {
   max-width: 100%;
   height: auto;
+}
+
+::selection {
+  background: var(--accent);
+  color: #0d0f14;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
 }

@@ -1,7 +1,7 @@
 function Navbar() {
   return (
     <nav className="navbar">
-      <span className="navbar-logo">Gabriel Martins</span>
+      <a href="#hero" className="navbar-logo">Gabriel Martins</a>
       <div className="navbar-links">
         <a href="#hero">Home</a>
         <a href="#about">Sobre</a>
@@ -9,6 +9,7 @@ function Navbar() {
         <a href="#contact">Contato</a>
       </div>
     </nav>
+    
   );
 }
 
