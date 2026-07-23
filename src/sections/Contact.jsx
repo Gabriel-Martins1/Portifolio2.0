@@ -7,7 +7,7 @@ function Contact() {
         <h2>Contato</h2>
       </Reveal>
       <Reveal delay={0.1}>
-        <p>Quer trocar uma ideia ou tem um projeto em mente? Me chama por aqui:</p>
+        <p>Tem um projeto em mente? Me chama por aqui:</p>
       </Reveal>
       <Reveal delay={0.2}>
         <div className="contact-links">
