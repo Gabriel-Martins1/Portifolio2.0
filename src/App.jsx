@@ -5,6 +5,7 @@ import Skills from './sections/Skills'
 import Projects from './sections/Projects'
 import Contact from './sections/Contact'
 import Footer from './components/Footer'
+import Admin from './pages/Admin'
 import './App.css'
 
 function App() {
