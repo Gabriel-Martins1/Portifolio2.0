@@ -610,3 +610,27 @@ section[id] {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
+
+#projects h2,
+#about h2,
+#skills h2,
+#contact h2 {
+  font-size: 2rem;
+  margin-bottom: 40px;
+  position: relative;
+  padding-left: 20px;
+}
+
+#projects h2::before,
+#about h2::before,
+#skills h2::before,
+#contact h2::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 4px;
+  background: var(--accent);
+  border-radius: 4px;
+}
