@@ -456,20 +456,78 @@ section[id] {
   color: var(--accent);
 }
 
+
+.navbar-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.navbar-toggle span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.navbar-toggle.aberto span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.navbar-toggle.aberto span:nth-child(2) {
+  opacity: 0;
+}
+
+.navbar-toggle.aberto span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
 @media (max-width: 768px) {
-  /* Navbar — empilhada e compacta no mobile (NÃO repetir os estilos de desktop aqui) */
   .navbar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    flex-wrap: wrap;
     padding: 16px 20px;
   }
 
-  .navbar-links {
-    gap: 16px;
-    flex-wrap: wrap;
-    font-size: 0.9rem;
+  .navbar-toggle {
+    display: flex;
   }
+
+.navbar-links {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 4px;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+    margin-top: 0;
+    transition: max-height 0.35s ease, opacity 0.25s ease, margin-top 0.35s ease;
+  }
+
+  .navbar-links.aberto {
+    max-height: 400px;
+    opacity: 1;
+    pointer-events: auto;
+    margin-top: 16px;
+  }
+
+  .navbar-links a {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    width: 100%;
+  }
+
+
 
   /* Seções — menos respiro vertical e lateral em telas pequenas */
   section[id] {
@@ -634,3 +692,6 @@ section[id] {
   background: var(--accent);
   border-radius: 4px;
 }
+
+
+
