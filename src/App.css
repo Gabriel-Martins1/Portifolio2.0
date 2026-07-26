@@ -491,6 +491,68 @@ section[id] {
   transform: translateY(-7px) rotate(-45deg);
 }
 
+.navbar-links-desktop {
+  display: flex;
+  gap: 32px;
+}
+
+.navbar-links-desktop a {
+  position: relative;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding-bottom: 6px;
+  transition: color 0.25s ease;
+}
+
+.navbar-links-desktop a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.navbar-links-desktop a:hover {
+  color: var(--text);
+}
+
+.navbar-links-desktop a:hover::after {
+  width: 100%;
+}
+
+.navbar-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(10, 11, 15, 0.97);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+}
+
+.navbar-overlay a {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  transition: color 0.2s ease;
+}
+
+.navbar-overlay a:hover {
+  color: var(--accent);
+}
+
 @media (max-width: 768px) {
   .navbar {
     flex-wrap: wrap;
@@ -695,3 +757,55 @@ section[id] {
 
 
 
+.projects-filters {
+  margin-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.projects-search {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: var(--text);
+  font-size: 0.95rem;
+  max-width: 320px;
+}
+
+.projects-search:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.projects-tech-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tech-filter-pill {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.tech-filter-pill:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.tech-filter-pill.ativo {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #0d0f14;
+}

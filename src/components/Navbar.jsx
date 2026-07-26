@@ -30,8 +30,7 @@ function Navbar() {
       </div>
     </nav>
 
-       
- 
+    
   );
 }
 
