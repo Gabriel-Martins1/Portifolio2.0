@@ -1,36 +1,26 @@
 /* Hero */
-#hero {
-  min-height: 70vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-}
-
-#hero::before {
-  content: "";
-  position: absolute;
-  top: -20%;
-  right: -10%;
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-  filter: blur(60px);
-  pointer-events: none;
-  z-index: -1;
-}
-
-#hero h1 {
-  font-size: clamp(2.2rem, 5vw, 3.5rem);
-}
-
-#hero p {
+.hero-typewriter {
   color: var(--text-muted);
   font-size: 1.1rem;
   margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
 }
 
+.hero-cursor {
+  color: var(--accent);
+  margin-left: 2px;
+  font-weight: 400;
+}
+
+.hero-cursor.piscando {
+  animation: cursor-blink 1s step-end infinite;
+}
+
+@keyframes cursor-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
 section[id] {
   scroll-margin-top: 80px;
 }

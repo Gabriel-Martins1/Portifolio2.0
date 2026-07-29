@@ -1,7 +1,28 @@
+import { useState, useEffect } from 'react';
 import { motion } from "motion/react";
 import Button from '../components/Button';
 
+const TEXTO = "Desenvolvedor...";
+const VELOCIDADE = 90; // ms entre cada letra
+
 function Hero() {
+  const [textoDigitado, setTextoDigitado] = useState('');
+  const [terminouDigitar, setTerminouDigitar] = useState(false);
+
+  useEffect(() => {
+    let i = 0;
+    const intervalo = setInterval(() => {
+      i++;
+      setTextoDigitado(TEXTO.slice(0, i));
+      if (i >= TEXTO.length) {
+        clearInterval(intervalo);
+        setTerminouDigitar(true);
+      }
+    }, VELOCIDADE);
+
+    return () => clearInterval(intervalo);
+  }, []);
+
   return (
     <section id="hero">
       <motion.h1
@@ -11,13 +32,12 @@ function Hero() {
       >
         Olá, sou o Gabriel
       </motion.h1>
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.15 }}
-      >
-        Desenvolvedor
-      </motion.p>
+
+      <p className="hero-typewriter">
+        {textoDigitado}
+        <span className={`hero-cursor ${terminouDigitar ? 'piscando' : ''}`}>|</span>
+      </p>
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
