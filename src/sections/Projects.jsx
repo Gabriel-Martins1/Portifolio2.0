@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import useProjects from "../hooks/useProjects";
 import ProjectCard from "../components/ProjectCard";
 import Reveal from '../components/Reveal';
-
+import ProjectCardSkeleton from '../components/ProjectCardSkeleton';
 function Projects() {
   const { projetos, carregando, erro } = useProjects();
   const [busca, setBusca] = useState('');
@@ -63,7 +63,13 @@ const tecnologias = useMemo(() => {
         </Reveal>
       )}
 
-      {carregando && <p>Carregando projetos...</p>}
+      {carregando && (
+      <div className="projects-grid">
+        <ProjectCardSkeleton />
+        <ProjectCardSkeleton />
+        <ProjectCardSkeleton />
+      </div>
+      )}
       {erro && <p className="erro">{erro}</p>}
 
       {!carregando && !erro && projetos.length === 0 && (
