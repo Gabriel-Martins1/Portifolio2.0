@@ -1,0 +1,16 @@
+diff a/package.json b/package.json	(rejected hunks)
+@@ -10,9 +10,13 @@
+     "preview": "vite preview"
+   },
+   "dependencies": {
++    "@tailwindcss/vite": "^4.3.3",
++    "lenis": "^1.3.25",
++    "lucide-react": "^1.28.0",
+     "motion": "^12.42.2",
+     "react": "^19.2.7",
+-    "react-dom": "^19.2.7"
++    "react-dom": "^19.2.7",
++    "tailwindcss": "^4.3.3"
+   },
+   "devDependencies": {
+     "@eslint/js": "^10.0.1",

@@ -1,0 +1,277 @@
+diff a/src/sections/Projects.jsx b/src/sections/Projects.jsx	(rejected hunks)
+@@ -1,92 +1,217 @@
+-import { useState, useMemo } from 'react';
++import { useMemo, useState } from "react";
++import { AnimatePresence, motion } from "motion/react";
++import { Search, TriangleAlert } from "lucide-react";
+ import useProjects from "../hooks/useProjects";
+ import ProjectCard from "../components/ProjectCard";
+-import Reveal from '../components/Reveal';
+-import ProjectCardSkeleton from '../components/ProjectCardSkeleton';
++import ProjectCardSkeleton from "../components/ProjectCardSkeleton";
++import SectionHeading from "../components/SectionHeading";
++import MagneticButton from "../components/MagneticButton";
++import BrandIcon from "../components/BrandIcon";
++import Reveal from "../components/Reveal";
++import { contatos } from "../data/site";
++
++/**
++ * Bento assimétrico: o primeiro projeto ocupa 4 colunas e 2 linhas,
++ * os seguintes se distribuem em blocos de 2 e 3 colunas.
++ */
++const PADROES = [
++  "md:col-span-2 lg:col-span-4 lg:row-span-2",
++  "lg:col-span-2",
++  "lg:col-span-2",
++  "lg:col-span-3",
++  "lg:col-span-3",
++];
++
++function areaDe(indice) {
++  return PADROES[indice] ?? "lg:col-span-2";
++}
++
+ function Projects() {
+   const { projetos, carregando, erro } = useProjects();
+-  const [busca, setBusca] = useState('');
++  const [busca, setBusca] = useState("");
+   const [techAtiva, setTechAtiva] = useState(null);
+ 
+-  // lista única de tecnologias, extraída de todos os projetos
+-const tecnologias = useMemo(() => {
+-  const todas = projetos.flatMap((p) => p.stack.split(',').map((t) => t.trim()));
+-  const unicas = new Map();
+-  todas.forEach((t) => unicas.set(t.toLowerCase(), t));
+-  return [...unicas.values()].sort();
+-}, [projetos]);
++  const tecnologias = useMemo(() => {
++    const todas = projetos.flatMap((projeto) =>
++      String(projeto.stack || "")
++        .split(",")
++        .map((item) => item.trim())
++        .filter(Boolean)
++    );
++    const unicas = new Map();
++    todas.forEach((tecnologia) =>
++      unicas.set(tecnologia.toLowerCase(), tecnologia)
++    );
++    return [...unicas.values()].sort((a, b) => a.localeCompare(b, "pt-BR"));
++  }, [projetos]);
+ 
+   const projetosFiltrados = useMemo(() => {
+-    return projetos.filter((p) => {
+-      const buscaOk = (p.titulo + p.descricao)
++    const termo = busca.trim().toLowerCase();
++    return projetos.filter((projeto) => {
++      const buscaOk = `${projeto.titulo} ${projeto.descricao}`
+         .toLowerCase()
+-        .includes(busca.toLowerCase());
+-      const techOk = !techAtiva || p.stack.toLowerCase().includes(techAtiva.toLowerCase());
++        .includes(termo);
++      const techOk =
++        !techAtiva ||
++        String(projeto.stack || "")
++          .toLowerCase()
++          .includes(techAtiva.toLowerCase());
+       return buscaOk && techOk;
+     });
+   }, [projetos, busca, techAtiva]);
+ 
++  const temProjetos = !carregando && !erro && projetos.length > 0;
++
+   return (
+-    <section id="projects">
+-      <Reveal>
+-        <h2>Projetos</h2>
+-      </Reveal>
++    <section id="projetos" className="shell scroll-mt-24 py-28 lg:py-36">
++      <SectionHeading
++        indice="02"
++        etiqueta="Projetos"
++        titulo={["O que já está", "rodando por aí."]}
++        descricao="Carregados em tempo real da minha API na Cloudflare — o mesmo painel que uso pra publicar alimenta esta seção."
++      />
+ 
+-      {!carregando && !erro && projetos.length > 0 && (
++      {/* Filtros */}
++      {temProjetos && (
+         <Reveal delay={0.1}>
+-          <div className="projects-filters">
+-            <input
+-              type="text"
+-              placeholder="Buscar projeto..."
+-              value={busca}
+-              onChange={(e) => setBusca(e.target.value)}
+-              className="projects-search"
+-            />
+-            <div className="projects-tech-filters">
+-              <button
+-                className={`tech-filter-pill ${!techAtiva ? 'ativo' : ''}`}
+-                onClick={() => setTechAtiva(null)}
+-              >
+-                Todos
+-              </button>
+-              {tecnologias.map((tech) => (
++          <div className="mt-12 flex flex-col gap-5 border-y border-hairline py-5 lg:flex-row lg:items-center lg:justify-between">
++            <div className="group relative w-full max-w-xs">
++              <Search
++                className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-ash transition-colors duration-300 group-focus-within:text-flame"
++                strokeWidth={1.8}
++              />
++              <input
++                type="search"
++                value={busca}
++                onChange={(evento) => setBusca(evento.target.value)}
++                placeholder="Buscar projeto"
++                aria-label="Buscar projeto"
++                className="w-full rounded-full border border-hairline bg-surface/60 py-2.5 pr-4 pl-11 text-sm text-chalk placeholder:text-ash focus:border-flame/50 focus:outline-none"
++              />
++            </div>
++
++            <ul className="flex flex-wrap items-center gap-1.5">
++              <li>
+                 <button
+-                  key={tech}
+-                  className={`tech-filter-pill ${techAtiva === tech ? 'ativo' : ''}`}
+-                  onClick={() => setTechAtiva(techAtiva === tech ? null : tech)}
++                  type="button"
++                  onClick={() => setTechAtiva(null)}
++                  className={`rounded-full px-3.5 py-1.5 font-mono text-[0.63rem] tracking-widest uppercase transition-all duration-300 ease-out ${
++                    !techAtiva
++                      ? "bg-flame text-ink"
++                      : "border border-hairline text-mist hover:border-flame/40 hover:text-flame"
++                  }`}
+                 >
+-                  {tech}
++                  Todos
+                 </button>
+-              ))}
+-            </div>
++              </li>
++              {tecnologias.map((tecnologia) => {
++                const ativa = techAtiva === tecnologia;
++                return (
++                  <li key={tecnologia}>
++                    <button
++                      type="button"
++                      onClick={() => setTechAtiva(ativa ? null : tecnologia)}
++                      aria-pressed={ativa}
++                      className={`rounded-full px-3.5 py-1.5 font-mono text-[0.63rem] tracking-widest uppercase transition-all duration-300 ease-out ${
++                        ativa
++                          ? "bg-flame text-ink"
++                          : "border border-hairline text-mist hover:border-flame/40 hover:text-flame"
++                      }`}
++                    >
++                      {tecnologia}
++                    </button>
++                  </li>
++                );
++              })}
++            </ul>
+           </div>
+         </Reveal>
+       )}
+ 
++      {/* Carregando */}
+       {carregando && (
+-      <div className="projects-grid">
+-        <ProjectCardSkeleton />
+-        <ProjectCardSkeleton />
+-        <ProjectCardSkeleton />
+-      </div>
++        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 lg:auto-rows-[minmax(260px,auto)] lg:grid-cols-6">
++          <ProjectCardSkeleton
++            destaque
++            className="md:col-span-2 lg:col-span-4 lg:row-span-2"
++          />
++          <ProjectCardSkeleton className="lg:col-span-2" />
++          <ProjectCardSkeleton className="lg:col-span-2" />
++        </div>
++      )}
++
++      {/* Erro */}
++      {erro && (
++        <div className="mt-10 flex items-center gap-4 rounded-3xl border border-red-500/20 bg-red-500/[0.06] p-6">
++          <TriangleAlert className="size-5 shrink-0 text-red-400" strokeWidth={1.8} />
++          <p className="text-sm text-red-200/90">{erro}</p>
++        </div>
+       )}
+-      {erro && <p className="erro">{erro}</p>}
+ 
++      {/* Vazio */}
+       {!carregando && !erro && projetos.length === 0 && (
+-        <p>Nenhum projeto cadastrado ainda.</p>
++        <p className="mt-10 rounded-3xl border border-hairline bg-surface/50 p-8 text-center text-sm text-mist">
++          Nenhum projeto cadastrado ainda.
++        </p>
+       )}
+ 
+-      {!carregando && !erro && projetos.length > 0 && projetosFiltrados.length === 0 && (
+-        <p>Nenhum projeto encontrado com esse filtro.</p>
++      {temProjetos && projetosFiltrados.length === 0 && (
++        <p className="mt-10 rounded-3xl border border-hairline bg-surface/50 p-8 text-center text-sm text-mist">
++          Nada encontrado com esse filtro.{" "}
++          <button
++            type="button"
++            onClick={() => {
++              setBusca("");
++              setTechAtiva(null);
++            }}
++            className="font-semibold text-flame underline-offset-4 hover:underline"
++          >
++            Limpar busca
++          </button>
++        </p>
+       )}
+ 
+-      <div className="projects-grid">
+-        {projetosFiltrados.map((projeto) => (
+-          <ProjectCard key={projeto.id} {...projeto} />
+-        ))}
+-      </div>
++      {/* Bento */}
++      {temProjetos && projetosFiltrados.length > 0 && (
++        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 lg:auto-rows-[minmax(260px,auto)] lg:grid-cols-6">
++          <AnimatePresence mode="popLayout">
++            {projetosFiltrados.map((projeto, indice) => (
++              <motion.div
++                key={projeto.id}
++                layout
++                initial={{ opacity: 0, y: 24 }}
++                animate={{ opacity: 1, y: 0 }}
++                exit={{ opacity: 0, scale: 0.97 }}
++                transition={{
++                  type: "spring",
++                  stiffness: 100,
++                  damping: 20,
++                  delay: Math.min(indice, 5) * 0.06,
++                }}
++                className={areaDe(indice)}
++              >
++                <ProjectCard
++                  {...projeto}
++                  indice={indice + 1}
++                  destaque={indice === 0}
++                  className="h-full"
++                />
++              </motion.div>
++            ))}
++          </AnimatePresence>
++        </div>
++      )}
++
++      <Reveal delay={0.1}>
++        <div className="mt-12 flex justify-center">
++          <MagneticButton href={contatos.github} variant="secondary">
++            <BrandIcon marca="github" className="size-4" />
++            Todo o resto no GitHub
++          </MagneticButton>
++        </div>
++      </Reveal>
+     </section>
+   );
+ }
+ 
+-export default Projects;
+\ No newline at end of file
++export default Projects;

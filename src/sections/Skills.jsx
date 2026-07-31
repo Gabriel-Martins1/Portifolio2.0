@@ -1,34 +1,104 @@
-import Reveal from '../components/Reveal';
+import { motion } from "motion/react";
+import { Database, GitBranch, MonitorSmartphone, Server } from "lucide-react";
+import SectionHeading from "../components/SectionHeading";
+import SpotlightCard from "../components/SpotlightCard";
+import MonoLabel from "../components/MonoLabel";
+import { stack } from "../data/site";
 
-const skills = [
-  { nome: "C#", slug: "sharp" },  
-  { nome: "React", slug: "react" },
-  { nome: "Node.js", slug: "nodedotjs" },
-  { nome: "React Native", slug: "react" },
-  { nome: "Express", slug: "express" },
-  { nome: "GitHub", slug: "github" },
-  { nome: "PostgreSQL", slug: "postgresql" },
+const ICONES = { MonitorSmartphone, Server, Database, GitBranch };
+
+/** Larguras alternadas — evita o grid simétrico de sempre. */
+const AREAS = [
+  "lg:col-span-7",
+  "lg:col-span-5",
+  "lg:col-span-5",
+  "lg:col-span-7",
 ];
 
+function LogoTech({ slug }) {
+  if (!slug) {
+    return (
+      <span
+        aria-hidden="true"
+        className="size-1.5 rounded-full bg-flame/70 transition-colors duration-300 group-hover/pill:bg-flame"
+      />
+    );
+  }
 
-// duplica a lista pra criar o efeito de loop sem "costura" visível
-const linha = [...skills, ...skills];
+  return (
+    <img
+      src={`https://cdn.simpleicons.org/${slug}/8b8f9c`}
+      alt=""
+      aria-hidden="true"
+      loading="lazy"
+      width={14}
+      height={14}
+      className="size-3.5 opacity-70 transition-opacity duration-300 group-hover/pill:opacity-100"
+    />
+  );
+}
 
 function Skills() {
   return (
-    <section id="skills">
-      <Reveal>
-        <h2>Habilidades</h2>
-      </Reveal>
-      <div className="skills-marquee">
-        <div className="skills-track">
-          {linha.map((skill, i) => (
-            <div className="skill-pill" key={`${skill.slug}-${i}`}>
-              <img src={`https://cdn.simpleicons.org/${skill.slug}/FF6B4A`} alt={skill.nome} />
-              <span>{skill.nome}</span>
-            </div>
-          ))}
-        </div>
+    <section id="stack" className="shell scroll-mt-24 py-28 lg:py-36">
+      <SectionHeading
+        indice="03"
+        etiqueta="Stack"
+        titulo={["As ferramentas que", "uso pra entregar."]}
+        descricao="Agrupadas pela camada que resolvem, não por lista de buzzword."
+      />
+
+      <div className="mt-14 grid gap-4 lg:grid-cols-12">
+        {stack.map((grupo, indice) => {
+          const Icone = ICONES[grupo.icone];
+          return (
+            <motion.div
+              key={grupo.categoria}
+              initial={{ opacity: 0, y: 26 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-10% 0px" }}
+              transition={{
+                type: "spring",
+                stiffness: 100,
+                damping: 20,
+                delay: indice * 0.08,
+              }}
+              className={AREAS[indice] ?? "lg:col-span-6"}
+            >
+              <SpotlightCard className="h-full p-7" raio={360}>
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <span className="grid size-11 shrink-0 place-items-center rounded-2xl border border-hairline bg-white/[0.03] text-flame transition-colors duration-300 group-hover:border-flame/40 group-hover:bg-flame/10">
+                      {Icone && <Icone className="size-5" strokeWidth={1.6} />}
+                    </span>
+                    <div>
+                      <h3 className="text-lg font-bold tracking-tight">
+                        {grupo.categoria}
+                      </h3>
+                      <p className="mt-0.5 text-[0.83rem] text-mist">
+                        {grupo.resumo}
+                      </p>
+                    </div>
+                  </div>
+                  <MonoLabel tone="mist" className="mt-1 shrink-0 opacity-60">
+                    {String(grupo.itens.length).padStart(2, "0")}
+                  </MonoLabel>
+                </div>
+
+                <ul className="mt-7 flex flex-wrap gap-2">
+                  {grupo.itens.map((item) => (
+                    <li key={`${grupo.categoria}-${item.nome}`}>
+                      <span className="group/pill inline-flex items-center gap-2 rounded-full border border-hairline bg-white/[0.02] px-3.5 py-1.5 text-[0.8rem] font-medium text-chalk/85 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-flame/40 hover:bg-flame/[0.08] hover:text-chalk">
+                        <LogoTech slug={item.slug} />
+                        {item.nome}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </SpotlightCard>
+            </motion.div>
+          );
+        })}
       </div>
     </section>
   );

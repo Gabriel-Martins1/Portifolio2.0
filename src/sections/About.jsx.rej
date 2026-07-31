@@ -1,0 +1,129 @@
+diff a/src/sections/About.jsx b/src/sections/About.jsx	(rejected hunks)
+@@ -1,18 +1,115 @@
+-import Reveal from '../components/Reveal';
++import { motion } from "motion/react";
++import { Compass, GraduationCap, Rocket } from "lucide-react";
++import SectionHeading from "../components/SectionHeading";
++import SpotlightCard from "../components/SpotlightCard";
++import Reveal from "../components/Reveal";
++import { metricas } from "../data/site";
++
++const PRINCIPIOS = [
++  {
++    icone: GraduationCap,
++    titulo: "Formação em andamento",
++    texto:
++      "Curso de programação na CajuHub, com graduação na área de tecnologia no radar.",
++  },
++  {
++    icone: Rocket,
++    titulo: "Nada morre no protótipo",
++    texto:
++      "Todo projeto que começo vai até o deploy — domínio no ar, dados persistidos, painel de gestão.",
++  },
++  {
++    icone: Compass,
++    titulo: "Decisão antes de código",
++    texto:
++      "Escolho a stack pelo problema que ela resolve. Este site usa serverless porque não faz sentido manter servidor ligado pra servir 5 projetos.",
++  },
++];
+ 
+ function About() {
+   return (
+-    <section id="about">
+-      <Reveal>
+-        <h2>Sobre mim</h2>
+-      </Reveal>
+-      <Reveal delay={0.1}>
+-        <p>
+-          Sou um dev junior, faço um curso de programação na cajuhub e pretendo cursar algo na area de tecnologia!
+-        </p>
+-      </Reveal>
++    <section id="sobre" className="shell scroll-mt-24 py-28 lg:py-36">
++      <SectionHeading
++        indice="01"
++        etiqueta="Sobre"
++        titulo={["Dev júnior que entrega", "projeto em produção."]}
++      />
++
++      <div className="mt-16 grid gap-12 lg:grid-cols-12 lg:gap-16">
++        <div className="lg:col-span-6">
++          <Reveal>
++            <p className="border-l-2 border-flame pl-6 text-lg leading-relaxed text-chalk/90 sm:text-xl">
++              Sou dev júnior, estudo programação na CajuHub e pretendo seguir
++              com uma graduação na área de tecnologia.
++            </p>
++          </Reveal>
++
++          <Reveal delay={0.1}>
++            <p className="mt-7 max-w-lg leading-relaxed text-mist">
++              O que me move é ver a coisa funcionando fora da minha máquina.
++              Este portfólio é o exemplo mais direto disso: não é uma página
++              estática com projetos escritos no código. É um front em React
++              consumindo uma API própria em Cloudflare Workers, com banco D1,
++              arquivos em R2 e um painel administrativo protegido por token —
++              publicar um projeto novo virou cadastro, não commit.
++            </p>
++          </Reveal>
++
++          <div className="mt-12 grid grid-cols-3 gap-4">
++            {metricas.map((metrica, indice) => (
++              <Reveal key={metrica.rotulo} delay={0.15 + indice * 0.08}>
++                <div className="border-t border-hairline pt-4">
++                  <span className="block text-3xl font-extrabold tracking-tight text-flame sm:text-4xl">
++                    {metrica.valor}
++                  </span>
++                  <span className="mt-2 block text-[0.72rem] leading-snug text-mist">
++                    {metrica.rotulo}
++                  </span>
++                </div>
++              </Reveal>
++            ))}
++          </div>
++        </div>
++
++        <div className="flex flex-col gap-4 lg:col-span-6">
++          {PRINCIPIOS.map((principio, indice) => {
++            const Icone = principio.icone;
++            return (
++              <motion.div
++                key={principio.titulo}
++                initial={{ opacity: 0, x: 24 }}
++                whileInView={{ opacity: 1, x: 0 }}
++                viewport={{ once: true, margin: "-10% 0px" }}
++                transition={{
++                  type: "spring",
++                  stiffness: 100,
++                  damping: 20,
++                  delay: indice * 0.1,
++                }}
++              >
++                <SpotlightCard
++                  className="flex items-start gap-5 p-6 hover:border-hairline-2"
++                  raio={300}
++                >
++                  <span className="grid size-11 shrink-0 place-items-center rounded-2xl border border-hairline bg-white/[0.03] text-flame transition-colors duration-300 group-hover:border-flame/40 group-hover:bg-flame/10">
++                    <Icone className="size-5" strokeWidth={1.6} />
++                  </span>
++                  <div>
++                    <h3 className="text-base font-bold tracking-tight">
++                      {principio.titulo}
++                    </h3>
++                    <p className="mt-1.5 text-[0.9rem] leading-relaxed text-mist">
++                      {principio.texto}
++                    </p>
++                  </div>
++                </SpotlightCard>
++              </motion.div>
++            );
++          })}
++        </div>
++      </div>
+     </section>
+   );
+ }
+ 
+-export default About;
+\ No newline at end of file
++export default About;

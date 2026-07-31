@@ -1,0 +1,75 @@
+diff a/src/App.jsx b/src/App.jsx	(rejected hunks)
+@@ -1,31 +1,52 @@
+-import Navbar from './components/Navbar'
+-import Hero from './sections/Hero'
+-import About from './sections/About'
+-import Skills from './sections/Skills'
+-import Projects from './sections/Projects'
+-import Contact from './sections/Contact'
+-import Footer from './components/Footer'
+-import Admin from './pages/Admin'
+-import './App.css'
++import Navbar from "./components/Navbar";
++import Footer from "./components/Footer";
++import NoiseLayer from "./components/NoiseLayer";
++import SmoothScroll from "./components/SmoothScroll";
++import Hero from "./sections/Hero";
++import About from "./sections/About";
++import Projects from "./sections/Projects";
++import Skills from "./sections/Skills";
++import Timeline from "./sections/Timeline";
++import Contact from "./sections/Contact";
++import Admin from "./pages/Admin";
+ 
+ function App() {
+-  const isAdmin = window.location.pathname === "/admin";
++  const ehAdmin = window.location.pathname === "/admin";
+ 
+-  if (isAdmin) {
+-    return <Admin />;
++  if (ehAdmin) {
++    return (
++      <>
++        <NoiseLayer />
++        <Admin />
++      </>
++    );
+   }
+ 
+   return (
+-    <>
++    <SmoothScroll>
++      <NoiseLayer />
++
++      <a
++        href="#conteudo"
++        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[110] focus:rounded-full focus:bg-flame focus:px-5 focus:py-2.5 focus:text-sm focus:font-semibold focus:text-ink"
++      >
++        Pular para o conteúdo
++      </a>
++
+       <Navbar />
+-      <Hero />
+-      <About />
+-      <Skills />
+-      <Projects />
+-      <Contact />
++
++      <main id="conteudo">
++        <Hero />
++        <About />
++        <Projects />
++        <Skills />
++        <Timeline />
++        <Contact />
++      </main>
++
+       <Footer />
+-    </>
+-  )
++    </SmoothScroll>
++  );
+ }
+ 
+-export default App
++export default App;

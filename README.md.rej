@@ -1,0 +1,115 @@
+diff a/README.md b/README.md	(rejected hunks)
+@@ -73,14 +73,29 @@ O front nunca acessa o banco ou o bucket diretamente — tudo passa pelo Worker,
+ portfolio/
+ ├── src/
+ │   ├── assets/          → imagens estáticas do projeto
++│   ├── data/
++│   │   └── site.js           conteúdo estático (perfil, contatos, stack, trajetória)
++│   │                          em um só lugar — as seções só consomem
++│   ├── context/
++│   │   └── lenis.js          contexto que expõe a instância do smooth scroll
+ │   ├── components/      → peças reutilizáveis de UI
+-│   │   ├── Button.jsx        botão único (variantes primary/secondary), usado no site público e no admin
+-│   │   ├── Navbar.jsx        menu fixo no topo, com scroll suave até cada seção
+-│   │   ├── Footer.jsx        rodapé com links de contato
++│   │   ├── SmoothScroll.jsx  liga o Lenis e intercepta os links âncora da página
++│   │   ├── NoiseLayer.jsx    camada fixa de grão sobre todo o site
++│   │   ├── KineticText.jsx   revelação por máscara: cada palavra sobe de dentro
++│   │   │                      de um container com overflow-hidden (spring)
++│   │   ├── Reveal.jsx        mesma entrada, para blocos que não são texto
++│   │   ├── SpotlightCard.jsx card de vidro com holofote laranja seguindo o cursor
++│   │   ├── MagneticButton.jsx botão que é atraído pelo cursor (CTAs da landing)
++│   │   ├── Button.jsx        botão utilitário (formulários e painel admin)
++│   │   ├── MonoLabel.jsx     etiqueta mono no padrão `[ 01 // SOBRE ]`
++│   │   ├── SectionHeading.jsx cabeçalho padrão das seções
++│   │   ├── BrandIcon.jsx     ícones de marca (GitHub, LinkedIn, WhatsApp…)
++│   │   ├── LocalTime.jsx     relógio do meu fuso, usado no hero e no rodapé
++│   │   ├── Navbar.jsx        barra fixa com glassmorphism, seção ativa e progresso
++│   │   ├── Footer.jsx        rodapé com navegação, localização e fuso
+ │   │   ├── ProjectCard.jsx   "molde" que renderiza qualquer projeto vindo do banco
+-│   │   ├── ProjectForm.jsx   formulário de criar/editar projeto (usado só no admin)
+-│   │   └── Reveal.jsx        wrapper de animação — qualquer conteúdo dentro dele
+-│   │                          aparece suavemente ao entrar na tela (scroll reveal)
++│   │   ├── ProjectCardSkeleton.jsx  esqueleto de carregamento do bento
++│   │   └── ProjectForm.jsx   formulário de criar/editar projeto (usado só no admin)
+ │   ├── hooks/            → lógica de dados, separada da UI
+ │   │   ├── useProjects.js      busca os projetos publicados (rota pública)
+ │   │   ├── useAdminProjects.js CRUD dos projetos (rotas protegidas por token)
+@@ -89,10 +104,9 @@ portfolio/
+ │   │   ├── LoginAdmin.jsx    formulário de senha do painel
+ │   │   └── Admin.jsx         decide entre mostrar o login ou o painel, conforme autenticação
+ │   ├── sections/         → cada bloco visual da página inicial
+-│   │   ├── Hero.jsx, About.jsx, Skills.jsx, Projects.jsx, Contact.jsx
++│   │   ├── Hero.jsx, About.jsx, Projects.jsx, Skills.jsx, Timeline.jsx, Contact.jsx
+ │   ├── App.jsx           → monta as seções na ordem final e decide a rota /admin
+-│   ├── App.css            → estilos de layout e componentes
+-│   └── index.css          → variáveis globais (cores, fontes) e reset
++│   └── index.css          → tokens do design system (@theme), base e utilitários
+ │
+ ├── worker/               → back-end serverless (Cloudflare Worker)
+ │   ├── src/index.js         todas as rotas da API: projetos (CRUD), login, upload
+@@ -102,6 +116,9 @@ portfolio/
+ └── public/               → arquivos servidos como estão (favicon, ícones)
+ ```
+ 
++O CSS solto (`App.css`) foi removido: o estilo hoje mora nos tokens do
++`index.css` e em classes utilitárias do Tailwind dentro de cada componente.
++
+ ---
+ 
+ ## Tecnologias usadas e por quê
+@@ -109,7 +126,10 @@ portfolio/
+ | Camada | Tecnologia | Motivo da escolha |
+ |---|---|---|
+ | Front-end | React + Vite | Build rápido, e já era a stack usada nos projetos que o portfólio exibe |
+-| Animações | Motion (Framer Motion) | Biblioteca padrão de animação em React; resolve entrada de elementos e scroll reveal com pouco código |
++| Estilo | Tailwind CSS v4 | Design system declarado como tokens (`@theme`) no próprio CSS; o estilo vive junto do componente, sem folha global crescendo sem controle |
++| Animações | Motion (Framer Motion) | Biblioteca padrão de animação em React; resolve revelação por máscara, holofote nos cards e botões magnéticos com pouco código |
++| Rolagem | Lenis | Scroll inercial suave, com o mesmo easing aplicado à navegação por âncora |
++| Ícones | lucide-react | Traço fino e consistente; os logos de marca são SVGs próprios (`BrandIcon`) |
+ | Hospedagem do front | Cloudflare Pages | Deploy automático a cada push, CDN global, gratuito |
+ | Back-end | Cloudflare Workers | Serverless — sem servidor fixo pra manter, escala automaticamente |
+ | Banco de dados | Cloudflare D1 | SQL relacional, gratuito, acessível só pelo Worker (sem exposição direta à internet) |
+@@ -130,10 +150,40 @@ portfolio/
+ 
+ ## Funcionalidades
+ 
+-- Site público com Hero, Sobre mim, Habilidades (carrossel infinito), Projetos (carregados dinamicamente do banco) e Contato.
++- Site público com Hero, Sobre, Projetos (bento assimétrico carregado do banco), Stack, Trajetória e Contato.
++- Busca e filtro por tecnologia nos projetos, com reordenação animada do grid.
+ - Painel `/admin` protegido por senha, com CRUD completo dos projetos: criar, editar, excluir, upload de imagem e de arquivo para download (APK/instalador).
+ - Design responsivo (desktop e mobile).
+-- Animações de entrada e scroll reveal em todas as seções.
++
++---
++
++## Design system
++
++Tudo sai de tokens declarados em `src/index.css`, dentro de `@theme`:
++
++| Token | Valor | Uso |
++|---|---|---|
++| `ink` / `ink-2` | `#08080a` / `#0c0d10` | fundo da página (nunca preto puro) |
++| `surface` | `#121318` a 70% + `backdrop-blur` | cards, modais e a navbar |
++| `hairline` | `rgba(255,255,255,0.07)` | bordas ultrafinas |
++| `flame` / `ember` | `#ff5500` / `#f97316` | acento, com brilho âmbar em `rgba(255,85,0,0.15)` |
++| `chalk` / `mist` / `ash` | `#f5f5f7` / `#8b8f9c` / `#5b5f6b` | hierarquia de texto |
++
++Tipografia: **Plus Jakarta Sans** nos títulos (peso 700/800, `tracking-tight`)
++e **JetBrains Mono** nas etiquetas — `text-xs`, caixa alta e `tracking-widest`,
++sempre no formato `[ 01 // SOBRE ]`.
++
++### Interações
++
++- **Smooth scroll inercial** (Lenis) aplicado no componente raiz, inclusive nos links âncora.
++- **Kinetic text reveal**: no Hero e nos H2, cada palavra sobe de um container com `overflow-hidden` usando mola (`stiffness: 100, damping: 20`).
++- **Spotlight cards**: os cards leem a posição do mouse e desenham um gradiente radial laranja que acompanha o cursor e acende a borda de 1px.
++- **Botões magnéticos**: os CTAs são atraídos pelo cursor quando ele chega perto, com o conteúdo interno se deslocando um pouco mais que a casca.
++- **Navbar**: glassmorphism, seção ativa marcada em laranja via `IntersectionObserver` e barra de progresso de leitura.
++- **Grão**: camada fixa de ruído a 3% de opacidade sobre a página inteira.
++
++Quem tem *reduzir movimento* ligado no sistema não recebe o scroll inercial —
++a página cai no comportamento nativo do navegador.
+ 
+ ---
+ 

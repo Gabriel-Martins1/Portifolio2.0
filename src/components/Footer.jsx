@@ -1,13 +1,72 @@
+import { ArrowUpRight, MapPin } from "lucide-react";
+import LocalTime from "./LocalTime";
+import MonoLabel from "./MonoLabel";
+import { navegacao, perfil } from "../data/site";
+
 function Footer() {
-  const anoAtual = new Date().getFullYear();
+  const ano = new Date().getFullYear();
 
   return (
-    <footer className="footer">
-      <p>© {anoAtual} Gabriel Martins. Todos os direitos reservados.</p>
-      <div className="footer-links">
-        <a href="https://github.com/Gabriel-Martins1" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="https://www.linkedin.com/in/gabriel-martins-a9b426402/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-        <a href="mailto:martinslinke@gmail.com">E-mail</a>
+    <footer className="border-t border-hairline">
+      <div className="shell flex flex-col gap-10 py-12 lg:flex-row lg:items-start lg:justify-between">
+        <div>
+          <a
+            href="#inicio"
+            className="group inline-flex items-center gap-3"
+            aria-label="Voltar ao topo"
+          >
+            <span className="grid size-9 place-items-center rounded-xl border border-hairline bg-surface/70 text-[0.8rem] font-extrabold tracking-tight transition-colors duration-300 group-hover:border-flame/50 group-hover:text-flame">
+              {perfil.monograma}
+            </span>
+            <span className="text-sm font-semibold tracking-tight">
+              {perfil.nome}
+            </span>
+            <ArrowUpRight
+              className="size-4 text-ash transition-all duration-300 ease-out group-hover:-translate-y-0.5 group-hover:text-flame"
+              strokeWidth={2}
+            />
+          </a>
+
+          <p className="mt-5 max-w-xs text-[0.85rem] leading-relaxed text-mist">
+            {perfil.papel}. Disponível pra freelas, colaborações e a primeira
+            vaga como dev.
+          </p>
+        </div>
+
+        <nav aria-label="Rodapé">
+          <MonoLabel tone="mist">Navegação</MonoLabel>
+          <ul className="mt-5 grid grid-cols-2 gap-x-10 gap-y-2.5 sm:grid-cols-3 lg:grid-cols-2">
+            {navegacao.map((item) => (
+              <li key={item.id}>
+                <a
+                  href={`#${item.id}`}
+                  className="group inline-flex items-baseline gap-2 text-sm text-mist transition-colors duration-300 hover:text-flame"
+                >
+                  <span className="font-mono text-[0.62rem] text-ash transition-colors duration-300 group-hover:text-flame">
+                    {item.indice}
+                  </span>
+                  {item.rotulo}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+
+      <div className="border-t border-hairline">
+        <div className="shell flex flex-col items-center justify-between gap-3 py-6 text-center sm:flex-row sm:text-left">
+          <p className="mono-label text-ash">
+            © {ano} {perfil.nome}
+          </p>
+
+          <p className="mono-label flex items-center gap-2 text-ash">
+            <MapPin className="size-3" strokeWidth={2} />
+            <span>{perfil.local}</span>
+            <span className="opacity-40">/</span>
+            <LocalTime className="text-[0.6875rem] tracking-widest text-mist" />
+            <span className="opacity-40">GMT-3</span>
+          </p>
+        </div>
       </div>
     </footer>
   );

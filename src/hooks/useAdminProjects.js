@@ -1,31 +1,35 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-const API_URL = "https://portfolio-worker.gabrielzinnskk.workers.dev/api/projetos";
+const API_URL =
+  "https://portfolio-worker.gabrielzinnskk.workers.dev/api/projetos";
 
 function useAdminProjects(token) {
   const [projetos, setProjetos] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
 
-  async function buscarProjetos() {
+  const buscarProjetos = useCallback(async () => {
     setCarregando(true);
     try {
       const resposta = await fetch(API_URL);
       const dados = await resposta.json();
-      setProjetos(dados);
-    } catch (e) {
+      setProjetos(Array.isArray(dados) ? dados : []);
+    } catch {
       setErro("Erro ao carregar projetos.");
     } finally {
       setCarregando(false);
     }
-  }
+  }, []);
 
   async function criarProjeto(dadosProjeto) {
     setErro(null);
     try {
       const resposta = await fetch(API_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(dadosProjeto),
       });
       const dados = await resposta.json();
@@ -35,7 +39,7 @@ function useAdminProjects(token) {
       }
       await buscarProjetos();
       return true;
-    } catch (e) {
+    } catch {
       setErro("Erro ao criar projeto.");
       return false;
     }
@@ -46,7 +50,10 @@ function useAdminProjects(token) {
     try {
       const resposta = await fetch(`${API_URL}/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(dadosProjeto),
       });
       const dados = await resposta.json();
@@ -56,7 +63,7 @@ function useAdminProjects(token) {
       }
       await buscarProjetos();
       return true;
-    } catch (e) {
+    } catch {
       setErro("Erro ao editar projeto.");
       return false;
     }
@@ -76,17 +83,42 @@ function useAdminProjects(token) {
       }
       await buscarProjetos();
       return true;
-    } catch (e) {
+    } catch {
       setErro("Erro ao excluir projeto.");
       return false;
     }
   }
 
+  // A primeira carga não passa por setState síncrono: o estado só muda
+  // depois que a resposta chega.
   useEffect(() => {
-    buscarProjetos();
+    let ativo = true;
+
+    fetch(API_URL)
+      .then((resposta) => resposta.json())
+      .then((dados) => {
+        if (ativo) setProjetos(Array.isArray(dados) ? dados : []);
+      })
+      .catch(() => {
+        if (ativo) setErro("Erro ao carregar projetos.");
+      })
+      .finally(() => {
+        if (ativo) setCarregando(false);
+      });
+
+    return () => {
+      ativo = false;
+    };
   }, []);
 
-  return { projetos, carregando, erro, criarProjeto, editarProjeto, deletarProjeto };
+  return {
+    projetos,
+    carregando,
+    erro,
+    criarProjeto,
+    editarProjeto,
+    deletarProjeto,
+  };
 }
 
 export default useAdminProjects;

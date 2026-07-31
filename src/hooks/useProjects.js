@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
-const API_URL = "https://portfolio-worker.gabrielzinnskk.workers.dev/api/projetos";
+const API_URL =
+  "https://portfolio-worker.gabrielzinnskk.workers.dev/api/projetos";
 
 function useProjects() {
   const [projetos, setProjetos] = useState([]);
@@ -8,20 +9,26 @@ function useProjects() {
   const [erro, setErro] = useState(null);
 
   useEffect(() => {
-    async function buscarProjetos() {
-      try {
-        const resposta = await fetch(API_URL);
-        if (!resposta.ok) throw new Error("Falha ao buscar projetos");
-        const dados = await resposta.json();
-        setProjetos(dados);
-      } catch (e) {
-        setErro("Não foi possível carregar os projetos no momento.");
-      } finally {
-        setCarregando(false);
-      }
-    }
+    let ativo = true;
 
-    buscarProjetos();
+    fetch(API_URL)
+      .then((resposta) => {
+        if (!resposta.ok) throw new Error("Falha ao buscar projetos");
+        return resposta.json();
+      })
+      .then((dados) => {
+        if (ativo) setProjetos(Array.isArray(dados) ? dados : []);
+      })
+      .catch(() => {
+        if (ativo) setErro("Não foi possível carregar os projetos no momento.");
+      })
+      .finally(() => {
+        if (ativo) setCarregando(false);
+      });
+
+    return () => {
+      ativo = false;
+    };
   }, []);
 
   return { projetos, carregando, erro };

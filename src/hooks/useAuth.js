@@ -26,7 +26,7 @@ function useAuth() {
       localStorage.setItem("admin_token", dados.token);
       setToken(dados.token);
       return true;
-    } catch (e) {
+    } catch {
       setErro("Erro ao conectar com o servidor.");
       return false;
     } finally {

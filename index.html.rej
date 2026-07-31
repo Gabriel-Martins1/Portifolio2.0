@@ -1,0 +1,36 @@
+diff a/index.html b/index.html	(rejected hunks)
+@@ -1,16 +1,30 @@
+ <!doctype html>
+-<html lang="en">
++<html lang="pt-BR">
+   <head>
+     <meta charset="UTF-8" />
+     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+     <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
+     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+-    <title>Gabriel Martins — Desenvolvedor</title>
++    <title>Gabriel Martins — Desenvolvedor Frontend &amp; UI/UX</title>
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+-    <meta name="description" content="gitGabriel Martins — Desenvolvedor" />
+-    <meta property="og:description" content="Confira meus projetos em React, React Native, Node.js e C#." />
++    <meta name="theme-color" content="#08080a" />
++    <meta
++      name="description"
++      content="Gabriel Martins — desenvolvedor frontend. Interfaces em React, React Native e Node.js, com back-end serverless na Cloudflare."
++    />
++    <meta property="og:title" content="Gabriel Martins — Desenvolvedor Frontend &amp; UI/UX" />
++    <meta
++      property="og:description"
++      content="Confira meus projetos em React, React Native, Node.js e C#."
++    />
+     <meta property="og:image" content="/favicon-512.png" />
+     <meta property="og:type" content="website" />
++    <link rel="preconnect" href="https://fonts.googleapis.com" />
++    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
++    <link
++      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
++      rel="stylesheet"
++    />
+   </head>
+   <body>
+     <div id="root"></div>
